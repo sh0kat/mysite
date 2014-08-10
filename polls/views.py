@@ -1,22 +1,48 @@
 from django.shortcuts import render, get_object_or_404 
-from django.http import HttpResponseRedirect, Http404, HttpResponse
-from polls.models import Poll, Choice
-from django.template import RequestContext, loader
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.views import generic
+
+from polls.models import Choice, Poll
+
+class IndexView(generic.ListView):
+	template_name = 'polls/index.html'
+	context_object_name = 'latest_poll_list'
+
+	def get_queryset(self):
+		"""Return the last five published polls."""
+		return Poll.objects.order_by('-pub_date')[:5]
 
 
-def index(request):
-    latest_poll_list = Poll.objects.all().order_by('-pub_date')[:5]
-    context = {'latest_poll_list': latest_poll_list}
-    return render(request, 'polls/index.html', context)
+class DetailView(generic.DetailView):
+	model = Poll
+	template_name = 'polls/detail.html'
 
-def detail(request, poll_id):
-	poll = get_object_or_404(Poll, pk=poll_id)
-	return render(request, 'polls/detail.html', {'poll': poll})
 
-def results(request, poll_id):
-	poll = get_object_or_404(Poll, pk=poll_id)
-	return render(request, 'polls/results.html', {'poll': poll})
+class ResultsView(generic.DetailView):
+	model = Poll
+	template_name = 'polls/results.html'
+
+
+# from django.shortcuts import render, get_object_or_404 
+# from django.http import HttpResponseRedirect, Http404, HttpResponse
+# from polls.models import Poll, Choice
+# from django.template import RequestContext, loader
+# from django.core.urlresolvers import reverse
+
+
+# def index(request):
+#     latest_poll_list = Poll.objects.all().order_by('-pub_date')[:5]
+#     context = {'latest_poll_list': latest_poll_list}
+#     return render(request, 'polls/index.html', context)
+
+# def detail(request, poll_id):
+# 	poll = get_object_or_404(Poll, pk=poll_id)
+# 	return render(request, 'polls/detail.html', {'poll': poll})
+
+# def results(request, poll_id):
+# 	poll = get_object_or_404(Poll, pk=poll_id)
+# 	return render(request, 'polls/results.html', {'poll': poll})
 
 def vote(request, poll_id):
 	p = get_object_or_404(Poll, pk=poll_id)
