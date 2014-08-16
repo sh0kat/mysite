@@ -1,1 +1,1 @@
-<h2>Demo app using Django framework !</h2>
+<h1>Demo app using Django framework !</h1>
