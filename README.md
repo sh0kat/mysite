@@ -1,0 +1,1 @@
+<h1>Demo app using Django framework !</h1>
